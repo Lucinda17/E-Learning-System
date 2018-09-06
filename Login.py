@@ -57,24 +57,26 @@ class Login(QWidget):
         self.show()
 
     def addComponents(self):
-        loginLbl = QLabel("Login", self)
-        loginLbl.setFixedWidth(90)
+        loginLbl = QLabel("E-Learning System", self)
         loginLbl.setFixedHeight(100)
         loginLbl.setStyleSheet("QLabel{font-size: 23px}")
-        top = 100
-        loginLbl.move(self.left-30,70+top)
+        self.top = 100
+        loginLbl.move(self.left-90,70+self.top)
         self.userLE = QLineEdit(self)
         self.userLE.setPlaceholderText("  username")
         self.userLE.resize(200, 26)
-        self.userLE.move(self.left-100,200+top)
+        self.userLE.move(self.left-100,200+self.top)
         self.passLE = QLineEdit(self)
         self.passLE.setPlaceholderText("  password")
         self.passLE.resize(200, 26)
-        self.passLE.move(self.left-100,240+top)
+        self.passLE.move(self.left-100,240+self.top)
         self.passLE.setEchoMode(QLineEdit.Password)
+        
+        self.testLbl = QLabel("password invalid", self)
+        self.testLbl.move(9999,9999)
 
         self.LoginTab = QPushButton("Login", self)
-        self.LoginTab.move(self.left-100, 150+top)
+        self.LoginTab.move(self.left-100, 150+self.top)
         self.LoginTab.resize(100,36)
         self.LoginTab.setStyleSheet("QPushButton{background-color: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FBC2EB,stop: 1 #A6C1EE)}"
                                     "QPushButton{border-radius: 115px}"
@@ -82,25 +84,33 @@ class Login(QWidget):
         self.LoginTab.clicked.connect(self.LoginTabClicked)
 
         self.SignUpTab = QPushButton("Sign up", self)
-        self.SignUpTab.move(self.left, 150+top)
+        self.SignUpTab.move(self.left, 150+self.top)
         self.SignUpTab.resize(100,36)
         self.SignUpTab.setStyleSheet("QPushButton{background-color: white}"
                                      "QPushButton{border-radius: 115px}"
-                                     "QPushButton{color: #000000}")
+                                     "QPushButton{color: #8e838e}")
         self.SignUpTab.clicked.connect(self.SignUpTabClicked)
 
-        loginBtn = QPushButton("Log in",self)
-        loginBtn.move(self.left-100, 280+top)
-        loginBtn.resize(200,36)
-        loginBtn.clicked.connect(self.LoginClicked)
-        loginBtn.setStyleSheet("QPushButton{background-color: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FBC2EB,stop: 1 #A6C1EE)}"
+        self.loginBtn = QPushButton("Log in",self)
+        self.loginBtn.move(self.left-100, 280+self.top)
+        self.loginBtn.resize(200,36)
+        self.loginBtn.clicked.connect(self.LoginClicked)
+        self.loginBtn.setStyleSheet("QPushButton{background-color: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FBC2EB,stop: 1 #A6C1EE)}"
                                     "QPushButton{border-radius: 115px}"
                                     "QPushButton{color: #FFFFFF}")
 
         self.readBtn = QPushButton("Read", self)
-        self.readBtn.move(self.left-100, 320+top)
+        self.readBtn.move(self.left-100, 320+self.top)
         self.readBtn.resize(200,36)
         self.readBtn.clicked.connect(self.ReadClicked)
+
+        self.signupBtn = QPushButton("Sign up",self)
+        self.signupBtn.move(9999,9999)
+        self.signupBtn.resize(200,36)
+        self.signupBtn.clicked.connect(self.SignUpClicked)
+        self.signupBtn.setStyleSheet("QPushButton{background-color: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FBC2EB,stop: 1 #A6C1EE)}"
+                                     "QPushButton{border-radius: 115px}"
+                                     "QPushButton{color: #FFFFFF}")
         
     def LoginClicked(self):
         '''
@@ -108,28 +118,67 @@ class Login(QWidget):
         self.nd.show()
         self.hide()
         
-        stu = "student"+str(self.i)
-        self.i += 1
-        doc_ref = db.collection(u'users').document().set({
-            u'username': self.userLE.text(),
-            u'password': self.passLE.text()
-        })
+        '''
+
+        print(len(self.userLE.text())==10)
+        print(len(self.passLE.text())>4 and len(self.passLE.text())<15)
+        checkU = len(self.userLE.text())==10
+        checkP = len(self.passLE.text())>4 and len(self.passLE.text())<15
         '''
         users_ref = db.collection(u'users')
         users = users_ref.get()
 
         found = False
+        userNF = False
+        passNF = False
         for user in users:
-            #self.usersDict[user.to_dict()['username']] = user.to_dict()['password']
-            if self.userLE.text()==user.to_dict()['username'] and self.passLE.text()== user.to_dict()['password']:
-                found = True
-                break
+            if self.userLE.text()==user.to_dict()['username']:
+                userNF = True
+                if self.passLE.text()== user.to_dict()['password']:
+                    passNF = True
+                    found = True
+                    break
 
         if found:
             print("Login successful")
         else:
             print("Login fail")
+            if userNF == False:
+                 self.userErrorLbl = QLabel("username not found")
+                 self.userErrorLbl.move(self.left+110,200+self.top)
+            if passNF == False:
+                 self.passErrorLbl = QLabel("password not found")
+                 self.passErrorLbl.move(self.left+110,240+self.top)
+        '''
+        if checkU and checkP:
+            print("Login successful")
+        else:
+            print("Login fail")
+            if not checkU:
+                 self.testLbl.move(self.left+105,240+self.top)
+                 print("in not checkU")
+            if not checkP:
+                 passErrorLbl = QLabel("password not found")
+                 passErrorLbl.move(self.left+110,240+self.top)
 
+    def SignUpClicked(self):
+        users_ref = db.collection(u'users')
+        users = users_ref.get()
+
+        found = False
+        for user in users:
+            if self.userLE.text()==user.to_dict()['username']:
+                found = True
+                break
+
+        if found:
+            print("ID already exist")
+        else:
+            doc_ref = db.collection(u'users').document().set({
+                u'username': self.userLE.text(),
+                u'password': self.passLE.text()
+            })
+            print("Sign up successful")
         
 
     def ReadClicked(self):
@@ -140,25 +189,29 @@ class Login(QWidget):
             self.usersDict[user.to_dict()['username']] = user.to_dict()['password']
             #print(u'{} => {} : {}'.format(user.id, user.to_dict()['username'], user.to_dict()['password']))
 
-
         print()
         for key, value in self.usersDict.items():
             print(key, "\t:\t",value)
 
     def SignUpTabClicked(self):
         self.SignUpTab.setStyleSheet("QPushButton{background-color: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FBC2EB,stop: 1 #A6C1EE)}"
-                                    "QPushButton{border-radius: 115px}"
+                                    "QPushButton{border-radius: 115px;}"
                                     "QPushButton{color: #FFFFFF}")
         self.LoginTab.setStyleSheet("QPushButton{background-color: white}"
                                     "QPushButton{border-radius: 115px}"
-                                    "QPushButton{color: #000000}")
+                                    "QPushButton{color: #8e838e}")
+        self.loginBtn.move(9999,9999)
+        self.signupBtn.move(self.left-100, 280+self.top)
+
     def LoginTabClicked(self):
         self.LoginTab.setStyleSheet("QPushButton{background-color: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FBC2EB,stop: 1 #A6C1EE)}"
                                     "QPushButton{border-radius: 115px}"
                                     "QPushButton{color: #FFFFFF}")
         self.SignUpTab.setStyleSheet("QPushButton{background-color: white}"
                                     "QPushButton{border-radius: 115px}"
-                                    "QPushButton{color: #000000}")
+                                    "QPushButton{color: #8e838e}")
+        self.signupBtn.move(9999,9999)
+        self.loginBtn.move(self.left-100, 280+self.top)
             
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
