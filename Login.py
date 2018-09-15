@@ -5,6 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5 import QtCore
 import sys
 from StudentProfile import *
+from Student import *
 
 import firebase_admin
 from firebase_admin import credentials
@@ -67,7 +68,7 @@ class Login(QWidget):
         # Coordinates
         # ====
         self.top = 100
-        self.loginLbl_X = self.left-90
+        self.loginLbl_X = self.left-95
         self.loginLbl_Y = 70+self.top
         self.userLE_X = self.left-100
         self.userLE_Y =200+self.top
@@ -81,8 +82,10 @@ class Login(QWidget):
         self.LoginTab_Y = 
         self.SignUpTab_X =
         self.SignUpTab_Y =
-        self.loginBtn_X =
-        self.LoginBtn_Y =
+        '''
+        self.loginBtn_X = self.left-100 
+        self.loginBtn_Y = 280+self.top
+        '''
         self.siginBtn_X =
         self.siginBtn_Y =
         self.readBtn_X =
@@ -99,6 +102,11 @@ class Login(QWidget):
         self.passLE.move(self.passLE_X,self.passLE_Y)
         self.passLE.setEchoMode(QLineEdit.Password)
         
+        self.nameLE = QLineEdit(self)
+        self.nameLE.setPlaceholderText("  full name")
+        self.nameLE.resize(200,26)
+        self.nameLE.move(9999,9999)
+        
         # ULELbl = User Login Error Label
         self.ULELbl = QLabel("not found!", self)
         self.ULELbl.setStyleSheet("QLabel{color: #FF0000}")
@@ -110,7 +118,7 @@ class Login(QWidget):
         self.PLELbl.move(9999,9999)
 
         self.LoginTab = QPushButton("Login", self)
-        self.LoginTab.move(self.left-100, 150+self.top)
+        self.LoginTab.move(self.left-100,150+self.top)
         self.LoginTab.resize(100,36)
         self.LoginTab.setStyleSheet("QPushButton{background-color: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FBC2EB,stop: 1 #A6C1EE)}"
                                     "QPushButton{border-radius: 115px}"
@@ -137,7 +145,7 @@ class Login(QWidget):
         self.readBtn.move(self.left-100, 320+self.top)
         self.readBtn.resize(200,36)
         self.readBtn.clicked.connect(self.ReadClicked)
-        self.readBtn.setVisible(False)
+        self.readBtn.setVisible(True)
 
         self.signupBtn = QPushButton("Sign up",self)
         self.signupBtn.move(9999,9999)
@@ -178,7 +186,7 @@ class Login(QWidget):
                     found = True
                     # Check password
                     if self.passLE.text()== user.to_dict()['password']:
-                        self.nd = StudentProfile()
+                        self.nd = StudentProfile(user.to_dict()['name'])
                         self.nd.show()
                         self.hide()
                         break
@@ -196,23 +204,30 @@ class Login(QWidget):
             self.passLE.setText("")
 
     def SignUpClicked(self):
+        print("name: ",self.nameLE.text())
+        print("username: ",self.userLE.text())
+        print("password: ",self.passLE.text(),"\n")
+        print("-----SignupClicked-----")
         if self.CheckUsername(self.userLE.text()) and self.CheckPassword(self.passLE.text()):
             users_ref = db.collection(u'teachers')
             users = users_ref.get()
             userID = ""
 
             found = False
+            print("\n-----teachers-----")
             # Search in "teachers"
             for user in users:
                 if self.userLE.text()==user.to_dict()['username']:
                     found = True
                     userID = user.id
                     break
-
+            # if found in teachers
             if found:
+                print("-----found in teachers-----")
                 doc_ref = db.collection(u'teachers').document(userID).set({
                     u'username': self.userLE.text(),
-                    u'password': self.passLE.text()
+                    u'password': self.passLE.text(),
+                    u'name': self.nameLE.text()
                 })
                 
                 confirmMB = QMessageBox.question(self, 'Successful', "Sign up successful", QMessageBox.Ok)
@@ -220,27 +235,38 @@ class Login(QWidget):
                 self.nd = StudentProfile()
                 self.nd.show()
                 self.hide()
+            # not found in teachers
             else:
+                print("\n-----Students-----")
                 users_ref = db.collection(u'students')
                 users = users_ref.get()
                 
-                # Search in "stdents"
+                # Search in "students"
                 for user in users:
+                    print(user.to_dict()['username'])
                     if self.userLE.text()==user.to_dict()['username']:
                         found = True
                         userID = user.id
                         break
+                # if found in student
                 if found:        
-                    doc_ref = db.collection(u'students').document(userID).set({
-                        u'username': self.userLE.text(),
-                        u'password': self.passLE.text()
-                    })
-                    confirmMB = QMessageBox.question(self, 'Successful', "Sign up successful", QMessageBox.Ok)
-                    self.nd = StudentProfile()
-                    self.nd.show()
-                    self.hide()
+                    print("\n-----found in students-----")
+                    try:
+                        if self.userLE.text()==user.to_dict()['name']:
+                            print("\n***** Name is already exist *****")
+                    except:
+                        doc_ref = db.collection(u'students').document(userID).set({
+                            u'username': self.userLE.text(),
+                            u'password': self.passLE.text(),
+                            u'name': self.nameLE.text()
+                        })
+                        confirmMB = QMessageBox.question(self, 'Successful', "Sign up successful", QMessageBox.Ok)
+                        self.nd = StudentProfile()
+                        self.nd.show()
+                        self.hide()
+                # not found in students
                 else:
-                    errorMB = QMessageBox.question(self, 'Invalid', "Your ID is not found in the database", QMessageBox.Ok)
+                    errorMB = QMessageBox.question(self, 'Invalid', "Your ID is not in the database", QMessageBox.Ok)
                     self.userLE.setText("")
                     self.passLE.setText("")
 
@@ -258,16 +284,14 @@ class Login(QWidget):
                 self.passLE.setText("")
 
     def ReadClicked(self):
-        users_ref = db.collection(u'users')
+        users_ref = db.collection(u'students')
         users = users_ref.get()
-
+        print("----- Students -----")
         for user in users:
             self.usersDict[user.to_dict()['username']] = user.to_dict()['password']
+            print(f"{user.to_dict()['username']} : {user.to_dict()['name']} : {user.to_dict()['password']}")
             #print(u'{} => {} : {}'.format(user.id, user.to_dict()['username'], user.to_dict()['password']))
-
-        print()
-        for key, value in self.usersDict.items():
-            print(key, "\t\t:\t",value)
+        print("----- end of Students -----\n")
 
     def SignUpTabClicked(self):
         self.SignUpTab.setStyleSheet("QPushButton{background-color: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FBC2EB,stop: 1 #A6C1EE)}"
@@ -277,7 +301,10 @@ class Login(QWidget):
                                     "QPushButton{border-radius: 115px}"
                                     "QPushButton{color: #8e838e}")
         self.loginBtn.move(9999,9999)
-        self.signupBtn.move(self.left-100, 280+self.top)
+        self.signupBtn.move(self.loginBtn_X, self.loginBtn_Y+40)
+        self.userLE.move(self.userLE_X, self.userLE_Y+40)
+        self.nameLE.move(self.userLE_X, self.userLE_Y)
+        self.passLE.move(self.passLE_X, self.passLE_Y+40)
         self.tab = "signup"
 
     def LoginTabClicked(self):
@@ -288,7 +315,10 @@ class Login(QWidget):
                                     "QPushButton{border-radius: 115px}"
                                     "QPushButton{color: #8e838e}")
         self.signupBtn.move(9999,9999)
-        self.loginBtn.move(self.left-100, 280+self.top)
+        self.loginBtn.move(self.loginBtn_X, self.loginBtn_Y)
+        self.userLE.move(self.userLE_X, self.userLE_Y)
+        self.passLE.move(self.passLE_X, self.passLE_Y)
+        self.nameLE.move(9999,9999)
         self.tab = "login"
     
     def CheckUsername(self, user):
@@ -320,9 +350,12 @@ class Login(QWidget):
     def keyPressEvent(self, event):
         if event.key()==QtCore.Qt.Key_Return:
             if(self.tab == "signup"):
+                print("Signup is clicked")
                 self.SignUpClicked()
             else:
+                print("Login is clicked")
                 self.LoginClicked()
+
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = Login()
