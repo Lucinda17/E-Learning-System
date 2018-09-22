@@ -55,7 +55,6 @@ class StuViewTutorial(QWidget):
         self.hbox.addWidget(self.lbl)
         self.hbox.addStretch(1)
         self.vbox.addLayout(self.hbox)
-        self.subjectList = []
         users_ref = db.collection(u'tutorial')
         users = users_ref.get()
         

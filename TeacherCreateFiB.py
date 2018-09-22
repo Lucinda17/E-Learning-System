@@ -6,15 +6,25 @@ from PyQt5 import QtWidgets
 
 import sys
 
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+import TeacherCreateTut
+
+cred = credentials.Certificate('./ServiceAccountKey.json')
+default_app = firebase_admin.initialize_app(cred)
+db = firestore.client()
+
 class TeacherCreateFiB(QWidget):
-    def __init__(self, subjectName, subjectCode, tutorialNumber, numOfQuestion):
+    def __init__(self, subjectName, subjectCode, tutorialTitle, numOfQuestion):
         # set window title and sizes
         super().__init__()
         self.title = "Teacher: Create FiB Question"
         
         self.subjectName = subjectName
         self.subjectCode = subjectCode
-        self.tutorialNumber = tutorialNumber
+        self.tutorialTitle= tutorialTitle
         self.numOfQuestion = numOfQuestion
         self.emptyline = QLabel("")
 
@@ -75,11 +85,24 @@ class TeacherCreateFiB(QWidget):
         answerList = []
         
         for i in range(self.numOfQuestion):
-            questionList[i] = self.inputBoxList1[i].text()
-            answerList[i] = self.inputBoxList2[i].text()
+            questionList.append(self.inputBoxList1[i].text())
+            answerList.append(self.inputBoxList2[i].text())
             
         # to-do
         # pass the question into database
+        users_ref = db.collection(u'tutorial')
+        users = users_ref.get()
+        doc_ref = db.collection(u'tutorial').document().set({
+            u'subject': self.subjectName,
+            u'code': self.subjectCode,
+            u'title': self.tutorialTitle,
+            u'numOfQuestion': self.numOfQuestion,
+            u'questionList': questionList,
+            u'answerList': answerList,
+            u'type': "FiB"
+        })
+        confirm = QMessageBox.question(self, 'Successful', "Done!", QMessageBox.Ok)
+        self.returnPreviousWindow()
 
     def returnPreviousWindow(self):
         #FunctionNameofPreviousWindow()
@@ -87,6 +110,8 @@ class TeacherCreateFiB(QWidget):
         
         # add code to move to previous window once clicked
         # to-do
+        self.newWindow = TeacherCreateTut.TeacherCreateTut()
+        self.close()
 
 if __name__ == "__main__":
     App = QApplication(sys.argv)
