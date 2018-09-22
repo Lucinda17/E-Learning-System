@@ -68,14 +68,23 @@ class TeacherCreateTut(QWidget):
         subjectName = self.inputBox1.text()
         subjectCode = self.inputBox2.text()
         tutorialNumber = self.inputBox3.text()
-        tutorialType = self.comboBox1.itemText()
+        tutorialType = self.comboBox1.currentText()
 
+        if tutorialType == 'Fill in the Blank':
+            print('Created FiB')
+            #TeacherCreateFiB()
+        else:
+            print('Created MCQ')
+            #TeacherCreateMCQ()
+                
         # add code to move to next window once created
         # to-do
 
     def returnPreviousWindow(self):
 
-        something = true
+        #FunctionNameofPreviousWindow()
+        print('return')
+        
         # add code to move to previous window once clicked
         # to-do
 
