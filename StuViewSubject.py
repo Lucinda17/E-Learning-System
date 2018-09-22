@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QDesktopWidget, QLineEdit, QMessageBox 
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QDesktopWidget, QLineEdit, QMessageBox, QButtonGroup 
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import QtWidgets
@@ -10,9 +10,10 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 import StudentProfile 
+import StuViewTutorial
 
 cred = credentials.Certificate('./ServiceAccountKey.json')
-default_app = firebase_admin.initialize_app(cred)
+#default_app = firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 class StuViewSubject(QWidget):
@@ -42,10 +43,11 @@ class StuViewSubject(QWidget):
         self.show()
 
     def addComponents(self):
-        self.addSubjectBtn = QPushButton("Back", self)
-        self.addSubjectBtn.resize(100, 40)
-        self.addSubjectBtn.clicked.connect(self.addSubjectClicked)
+        self.backBtn = QPushButton("Back", self)
+        self.backBtn.resize(100, 40)
+        self.backBtn.clicked.connect(self.backClicked)
         self.subjectList = []
+        self.subjectBtnList = QButtonGroup(self)
         users_ref = db.collection(u'students')
         users = users_ref.get()
         
@@ -58,6 +60,7 @@ class StuViewSubject(QWidget):
                 self.subjectList = user.to_dict()['subjects']
                 for subject in self.subjectList:
                     temp = QPushButton(subject,self)
+                    temp.clicked.connect(self.subjectClicked)
                     temp.setStyleSheet("QPushButton{background-color: #3498db}"
                                        "QPushButton{border-radius: 115px}"
                                        "QPushButton{color: #FFFFFF}"
@@ -68,17 +71,26 @@ class StuViewSubject(QWidget):
                     if(x>self.screenSize.width()):
                         x = z
                         y += 200
+                    
+        self.subjectBtnList.buttonClicked.connect(self.subjectClicked)
+        '''
+        #---- For testing ----
+        self.subjectClicked()
+        self.hide()
+        #---------------------
+        '''
         
 
-    def addSubjectClicked(self):
+    def backClicked(self):
         self.hide()
         self.newWindow = StudentProfile.StudentProfile(self.username)
         self.newWindow.show()
         self.hide()
 
-        
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    MainWindow = StuViewSubject()
-    sys.exit(app.exec_())
+    def subjectClicked(self):
+        sender = self.sender()
+        #print("you pressed -> ",sender.text())
+        #self.newWindow = StuViewTutorial.StuViewTutorial(self.username, sender.text())
+        self.newWindow = StuViewTutorial.StuViewTutorial(self.username,"English") 
+        self.newWindow.show()
+        self.hide()

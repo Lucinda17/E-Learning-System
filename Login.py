@@ -89,9 +89,6 @@ class Login(QWidget):
         self.passLE.move(self.passLE_X,self.passLE_Y)
         self.passLE.setEchoMode(QLineEdit.Password)
 
-        self.userLE.setText("1111111111")
-        self.passLE.setText("Bb2222")
-        
         self.nameLE = QLineEdit(self)
         self.nameLE.setPlaceholderText("  full name")
         self.nameLE.resize(200,26)
@@ -144,6 +141,15 @@ class Login(QWidget):
         self.signupBtn.setStyleSheet("QPushButton{background-color: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FBC2EB,stop: 1 #A6C1EE)}"
                                      "QPushButton{border-radius: 115px}"
                                      "QPushButton{color: #FFFFFF}")
+        
+        '''
+        #---- For testing ----
+        self.userLE.setText("1161302962")
+        self.passLE.setText("Aa1111")
+        self.LoginClicked()
+        self.hide()
+        #---------------------
+        '''
         
     def LoginClicked(self):
         self.ULELbl.move(9999,9999)

@@ -63,6 +63,12 @@ class StudentProfile(QWidget):
         self.nameLbl = QLabel(self.name, self)
         self.nameLbl.setFixedWidth(1000)
         self.nameLbl.setFixedHeight(100)
+        '''
+        #---- For testing ----
+        self.viewSubjectClicked()
+        self.hide()
+        #---------------------
+        '''
 
     def viewSubjectClicked(self):
         self.newWindow = StuViewSubject(self.username)
