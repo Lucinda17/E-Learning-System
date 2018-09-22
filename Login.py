@@ -13,7 +13,7 @@ from firebase_admin import firestore
 import time
 
 cred = credentials.Certificate('./ServiceAccountKey.json')
-default_app = firebase_admin.initialize_app(cred)
+#default_app = firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 class Login(QWidget):
@@ -31,20 +31,7 @@ class Login(QWidget):
         self.usersDict = {}
         self.tab = "login"
 
-        #*****************************************************
-        """self.stylesheet = 
-            .self.loginTab{
-                background-color: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FBC2EB,stop: 1 #A6C1EE);
-                border-radius: 115px;
-                color: #FFFFFF;
-            }
-
-            QLabel{
-                font-size: 23px;
-            }
-        """
         self.InitWindow()
-        #self.setStyleSheet(self.stylesheet)
 
     def InitWindow(self):
         self.setWindowTitle(self.title)
@@ -101,6 +88,9 @@ class Login(QWidget):
         self.passLE.resize(200, 26)
         self.passLE.move(self.passLE_X,self.passLE_Y)
         self.passLE.setEchoMode(QLineEdit.Password)
+
+        self.userLE.setText("1111111111")
+        self.passLE.setText("Bb2222")
         
         self.nameLE = QLineEdit(self)
         self.nameLE.setPlaceholderText("  full name")
@@ -186,7 +176,7 @@ class Login(QWidget):
                     found = True
                     # Check password
                     if self.passLE.text()== user.to_dict()['password']:
-                        self.nd = StudentProfile(user.to_dict()['name'])
+                        self.nd = StudentProfile(user.to_dict()['username'])
                         self.nd.show()
                         self.hide()
                         break
@@ -204,9 +194,6 @@ class Login(QWidget):
             self.passLE.setText("")
 
     def SignUpClicked(self):
-        print("name: ",self.nameLE.text())
-        print("username: ",self.userLE.text())
-        print("password: ",self.passLE.text(),"\n")
         print("-----SignupClicked-----")
         if self.CheckUsername(self.userLE.text()) and self.CheckPassword(self.passLE.text()):
             users_ref = db.collection(u'teachers')

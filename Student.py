@@ -1,4 +1,8 @@
 class Student:
+    name = ""
+    username = ""
+    password = ""
+    subjects = []
 
     class __impl:
         # Implementation of the singleton interface
@@ -20,6 +24,3 @@ class Student:
 
     def __setattr__(self, attr, value):
         return setattr(self.__instance, attr, value)
-
-    def setUsername(self,username):
-        self.username = username

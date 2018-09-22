@@ -1,12 +1,22 @@
 #!/usr/bin/python3
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QDesktopWidget, QLineEdit
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QDesktopWidget, QLineEdit, QMessageBox 
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import QtWidgets
 import sys
 
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+import StudentProfile 
+
+cred = credentials.Certificate('./ServiceAccountKey.json')
+default_app = firebase_admin.initialize_app(cred)
+db = firestore.client()
+
 class StuViewSubject(QWidget):
-    def __init__(self):
+    def __init__(self, username):
         super().__init__()
 
         self.title = "Student - View Subject"
@@ -15,25 +25,14 @@ class StuViewSubject(QWidget):
         self.top = 0
         self.left = 0
 
-        self.stylesheet = """
-            QPushButton{
-                background-color: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FBC2EB,stop: 1 #A6C1EE);
-                border-radius: 115px;
-                color: #FFFFFF;
-            }
-
-            QLabel{
-                font-size: 23px;
-            }
-        """
+        self.username = username
         self.InitWindow()
-        self.setStyleSheet(self.stylesheet)
 
     def InitWindow(self):
         self.setWindowTitle(self.title)
         self.screenSize = QtWidgets.QDesktopWidget().screenGeometry(-1)
         self.setGeometry(0, 0, self.screenSize.width(), self.screenSize.height())
-        self.setFixedSize(self.screenSize.width(), self.screenSize.height())
+        #self.setFixedSize(self.screenSize.width(), self.screenSize.height())
         # Set window background color
         self.setAutoFillBackground(True)
         p = self.palette()
@@ -43,17 +42,39 @@ class StuViewSubject(QWidget):
         self.show()
 
     def addComponents(self):
-        self.viewSubject = QPushButton("Mathematics",self)
-        self.viewSubject.resize(200,60)
-        self.viewSubject.move(100,100)
-        self.viewSubject.clicked.connect(self.viewSubjectClicked)
+        self.addSubjectBtn = QPushButton("Back", self)
+        self.addSubjectBtn.resize(100, 40)
+        self.addSubjectBtn.clicked.connect(self.addSubjectClicked)
+        self.subjectList = []
+        users_ref = db.collection(u'students')
+        users = users_ref.get()
+        
+        z = self.screenSize.width()/6 - 100 
+        x = z 
+        y = 200
+        for user in users:
+            if(user.to_dict()['username']==self.username):
+                
+                self.subjectList = user.to_dict()['subjects']
+                for subject in self.subjectList:
+                    temp = QPushButton(subject,self)
+                    temp.setStyleSheet("QPushButton{background-color: #3498db}"
+                                       "QPushButton{border-radius: 115px}"
+                                       "QPushButton{color: #FFFFFF}"
+                                       "QPushButton{font-size: 20px}")
+                    temp.resize(200,100)
+                    temp.move(x,y)
+                    x += z + 100
+                    if(x>self.screenSize.width()):
+                        x = z
+                        y += 200
+        
 
-    def viewSubjectClicked(self):
-        '''
-        self.newWindow = StuViewSubject()
+    def addSubjectClicked(self):
+        self.hide()
+        self.newWindow = StudentProfile.StudentProfile(self.username)
         self.newWindow.show()
         self.hide()
-        '''
 
         
 

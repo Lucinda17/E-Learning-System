@@ -8,21 +8,12 @@ import sys
 from StuViewSubject import *
 from Student import *
 
-u = ""
-class StudentProfile(QWidget):
-    username = "Jeff"
-    global u
-    u = username
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
 
-    def paaa(self):
-        stu = Student()
-        stu.username = u
-        print("\n\n\n\n")
-        print("u: ",u)
-        print("student: ",stu.username)
-        print("\n\n\n\n")
-        #print(jack)
-   
+class StudentProfile(QWidget):
+
     def __init__(self, username):
         super().__init__()
 
@@ -68,31 +59,18 @@ class StudentProfile(QWidget):
         self.viewSubject.clicked.connect(self.viewSubjectClicked)
         self.stu = Student()
         self.stu.username = self.username
-        print("\n\n\n\n")
-        print("student: ",self.stu.username)
-        print("\n\n\n\n")
         self.name = "Name: " + self.username
         self.nameLbl = QLabel(self.name, self)
         self.nameLbl.setFixedWidth(1000)
         self.nameLbl.setFixedHeight(100)
 
-    '''
-    # To open new window
-    def Clicked(self):
-        
-        self.nd = StudentProfile()
-        self.nd.show()
-        self.hide()
-    '''
     def viewSubjectClicked(self):
-        self.newWindow = StuViewSubject()
+        self.newWindow = StuViewSubject(self.username)
         self.newWindow.show()
-        self.hide()
+        self.close()
 
         
-'''
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     MainWindow = StudentProfile()
     sys.exit(app.exec_())
-'''
