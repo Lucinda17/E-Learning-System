@@ -6,6 +6,7 @@ from PyQt5 import QtWidgets
 
 import sys
 import TeacherCreateFiB
+import TeacherCreateMCQ
 
 class TeacherCreateTut(QWidget):
     def __init__(self):
@@ -82,7 +83,7 @@ class TeacherCreateTut(QWidget):
             self.newWindow.show()
             self.close()
         else:
-            self.newWindow = TeacherCreateMCQ(self.subjectName, self.subjectCode, self.tutorialNumber, self.numOfQuestion)
+            self.newWindow = TeacherCreateMCQ.TeacherCreateMCQ(subjectName, subjectCode, tutorialNumber, numOfQuestion)
             self.newWindow.show()
             self.close()
 
