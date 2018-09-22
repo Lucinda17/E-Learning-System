@@ -5,6 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5 import QtWidgets
 
 import sys
+import TeacherCreateFiB
 
 class TeacherCreateTut(QWidget):
     def __init__(self):
@@ -29,14 +30,16 @@ class TeacherCreateTut(QWidget):
         self.caption1 = QLabel("Please enter the following details to create a tutorial: ")
         self.emptyline = QLabel("")
         
-        self.info1 = QLabel("Subject Name")
-        self.info2 = QLabel("Subject Code")
-        self.info3 = QLabel("Tutorial Number")
-        self.info4 = QLabel("Tutorial Type")
+        self.info1 = QLabel("Subject Name:")
+        self.info2 = QLabel("Subject Code:")
+        self.info3 = QLabel("Tutorial Number:")
+        self.info4 = QLabel("Tutorial Type:")
+        self.info5 = QLabel("Number of Question:")
         
         self.inputBox1 = QLineEdit()
         self.inputBox2 = QLineEdit()
         self.inputBox3 = QLineEdit()
+        self.inputBox4 = QLineEdit()
         self.comboBox1 = QComboBox()
         self.comboBox1.addItem("Fill in the Blank")
         self.comboBox1.addItem("Multiple Choice Question")
@@ -55,6 +58,8 @@ class TeacherCreateTut(QWidget):
         self.vBoxLayout.addWidget(self.inputBox3)
         self.vBoxLayout.addWidget(self.info4)
         self.vBoxLayout.addWidget(self.comboBox1)
+        self.vBoxLayout.addWidget(self.info5)
+        self.vBoxLayout.addWidget(self.inputBox4)
         self.vBoxLayout.addWidget(self.emptyline)
         self.vBoxLayout.addWidget(self.createButton)
         self.vBoxLayout.addWidget(self.returnButton)
@@ -69,25 +74,26 @@ class TeacherCreateTut(QWidget):
         subjectCode = self.inputBox2.text()
         tutorialNumber = self.inputBox3.text()
         tutorialType = self.comboBox1.currentText()
+        numOfQuestion = self.inputBox4.text()
+        numOfQuestion = int(numOfQuestion)
 
         if tutorialType == 'Fill in the Blank':
-            print('Created FiB')
-            #TeacherCreateFiB()
+            self.newWindow = TeacherCreateFiB.TeacherCreateFiB(subjectName, subjectCode, tutorialNumber, numOfQuestion)
+            self.newWindow.show()
+            self.close()
         else:
-            print('Created MCQ')
-            #TeacherCreateMCQ()
-                
-        # add code to move to next window once created
-        # to-do
+            self.newWindow = TeacherCreateMCQ(self.subjectName, self.subjectCode, self.tutorialNumber, self.numOfQuestion)
+            self.newWindow.show()
+            self.close()
 
     def returnPreviousWindow(self):
-
         #FunctionNameofPreviousWindow()
         print('return')
         
         # add code to move to previous window once clicked
         # to-do
 
-App = QApplication(sys.argv)
-window = TeacherCreateTut()
-sys.exit(App.exec())
+if __name__ == "__main__":
+    App = QApplication(sys.argv)
+    window = TeacherCreateTut()
+    sys.exit(App.exec())
