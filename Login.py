@@ -164,7 +164,7 @@ class Login(QWidget):
                 found = True
                 # Check password
                 if self.passLE.text()== user.to_dict()['password']:
-                    # TODO - Change to TeacherProfile()#CHANGE made
+                    
                     print("login - teacher")
                     self.nd = TeacherProfile(user.to_dict()['username'])
                     self.nd.show()
@@ -226,7 +226,7 @@ class Login(QWidget):
                 })
                 
                 confirmMB = QMessageBox.question(self, 'Successful', "Sign up successful", QMessageBox.Ok)
-                # TODO - Change to TeacherProfile() later CHANGE made
+               
                 self.nd = TeacherProfile()
                 self.nd.show()
                 self.hide()
