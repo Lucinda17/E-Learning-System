@@ -105,8 +105,9 @@ class TeacherCreateFiB(QWidget):
         self.returnPreviousWindow()
 
     def returnPreviousWindow(self):
-        #FunctionNameofPreviousWindow()
-        print('return')
+        self.newWindow = TeacherCreateTut.TeacherCreateTut()
+        self.newWindow.show()
+        self.close()
         
         # add code to move to previous window once clicked
         # to-do
