@@ -6,11 +6,15 @@ from PyQt5 import QtWidgets
 import sys
 
 from TeaViewSubject import *
-#from Teacher import *
+import Login
+import Config
+
 #Connect to firebase library 
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+
+db = Config.db
 
 class TeacherProfile(QWidget):
     # create window(Headline)
@@ -55,25 +59,73 @@ class TeacherProfile(QWidget):
 
     #add component function
     def addComponents(self):
+#Add Teacher Profile
+        self.name = ""
+        users_ref = db.collection(u'teachers')
+        users = users_ref.get()
+        
+        for user in users:
+            if(user.to_dict()['username']==self.username):
+                self.name = user.to_dict()['name']
+
+
+        profileLbl = QLabel("Teacher Profile", self)
+        profileLbl.setFixedHeight(100)
+        profileLbl.setStyleSheet("QLabel{font-size: 70px}")
+        profileLbl.move(700,100)
+        #
+        #View Subject Button
         self.viewSubject = QPushButton("View Subject ",self)
-        self.viewSubject.resize(200,60)
-        self.viewSubject.move(100,100)
+        self.viewSubject.resize(200,100)
+        self.viewSubject.move(1200,800)
         self.viewSubject.clicked.connect(self.viewSubjectClicked)
-        self.name="User Name:"+self.username
-        self.nameLbl = QLabel(self.name, self)
-        self.nameLbl.setFixedWidth(1000)
-        self.nameLbl.setFixedHeight(100)
-        print("teacher profile")
+
+        #discussionBoard Button(stub)
+        self.discussionBoard = QPushButton("Access to Discussion Board",self)
+        self.discussionBoard.resize(200,100)
+        self.discussionBoard.move(800,800)
+
+        #Student Performance Button(stub)
+        self.stuPerform = QPushButton("Access to Student Performance",self)
+        self.stuPerform.resize(200,100)
+        self.stuPerform.move(400,800)
+
+        #Name Label
+        self.nameLabel="Name:                           "+self.name
+        nameLbl = QLabel(self.nameLabel, self)
+        nameLbl.setStyleSheet("QLabel{font-size: 40px}")
+        nameLbl.move(400,300)
+
+        self.idLabel=  "ID:                                      "+self.username
+        idLbl = QLabel(self.idLabel, self)
+        idLbl.setStyleSheet("QLabel{font-size: 40px}")
+        idLbl.move(400,400)
+                                
+        self.subLabel="Subject Teaching:                  Mathematics,Physics"
+        subLbl = QLabel(self.subLabel, self)
+        subLbl.setStyleSheet("QLabel{font-size: 40px}")
+        subLbl.move(400,500)
+
+        self.createTutBtn = QPushButton("Back", self)
+        self.createTutBtn .resize(100, 40)
+        self.createTutBtn .clicked.connect(self.backClicked)
+
         '''
         #---- For testing ----
         self.viewSubjectClicked()
         self.hide()
         #---------------------
         '''
+
     def viewSubjectClicked(self):
         self.newWindow = TeaViewSubject(self.username)
         self.newWindow.show()
         self.close()
+    
+    def backClicked(self):
+        self.newWindow = Login.Login()
+        self.newWindow.show()
+        self.hide()
  
 # create window(exit)  
 if __name__ == "__main__":

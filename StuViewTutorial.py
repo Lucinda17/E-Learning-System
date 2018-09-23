@@ -50,9 +50,9 @@ class StuViewTutorial(QWidget):
         self.show()
 
     def addComponents(self):
-        self.addSubjectBtn = QPushButton("Back", self)
-        self.addSubjectBtn.resize(100, 40)
-        self.addSubjectBtn.clicked.connect(self.addSubjectClicked)
+        self.backBtn = QPushButton("Back", self)
+        self.createTutBtn .resize(100, 40)
+        self.createTutBtn .clicked.connect(self.backClicked)
         self.lbl = QLabel(self.subject,self)
         self.vbox = QVBoxLayout(self)
         self.hbox = QHBoxLayout(self)
@@ -80,7 +80,7 @@ class StuViewTutorial(QWidget):
         self.vbox.addStretch(20)
         self.setLayout(self.vbox)
 
-    def addSubjectClicked(self):
+    def backClicked(self):
         self.hide()
         self.newWindow = StuViewSubject.StuViewSubject(self.username)
         self.newWindow.show()
