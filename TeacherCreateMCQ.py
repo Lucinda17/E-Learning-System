@@ -5,6 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5 import QtWidgets
 
 import sys
+import TeacherCreateTut
 
 import firebase_admin
 from firebase_admin import credentials
@@ -118,8 +119,9 @@ class TeacherCreateMCQ(QWidget):
         self.returnPreviousWindow()
 
     def returnPreviousWindow(self):
-        #FunctionNameofPreviousWindow()
-        print('return')
+        self.newWindow = TeacherCreateTut.TeacherCreateTut()
+        self.newWindow.show()
+        self.close()
         
         # add code to move to previous window once clicked
         # to-do
