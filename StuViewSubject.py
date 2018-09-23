@@ -12,7 +12,7 @@ from firebase_admin import firestore
 import StudentProfile 
 import StuViewTutorial
 
-cred = credentials.Certificate('./ServiceAccountKey.json')
+cred = credentials.Certificate('ServiceAccountKey.json')
 #default_app = firebase_admin.initialize_app(cred)
 db = firestore.client()
 
@@ -90,7 +90,7 @@ class StuViewSubject(QWidget):
     def subjectClicked(self):
         sender = self.sender()
         #print("you pressed -> ",sender.text())
-        #self.newWindow = StuViewTutorial.StuViewTutorial(self.username, sender.text())
-        self.newWindow = StuViewTutorial.StuViewTutorial(self.username,"English") 
+        self.newWindow = StuViewTutorial.StuViewTutorial(self.username, sender.text())
+        #self.newWindow = StuViewTutorial.StuViewTutorial(self.username,"English") 
         self.newWindow.show()
         self.hide()

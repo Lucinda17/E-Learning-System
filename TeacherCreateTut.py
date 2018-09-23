@@ -5,15 +5,22 @@ from PyQt5.QtCore import *
 from PyQt5 import QtWidgets
 
 import sys
+
+import TeaViewTutorial
 import TeacherCreateFiB
 import TeacherCreateMCQ
+import Config
+
+cred = Config.cred
+default_app = Config.default_app
+db = Config.db
 
 class TeacherCreateTut(QWidget):
     '''
     TODO
     -- pass teacher username
     '''
-    def __init__(self):
+    def __init__(self,username, subject):
         # set window title and sizes
         super().__init__()
         self.title = "Teacher: Create Tutorial"
@@ -21,6 +28,9 @@ class TeacherCreateTut(QWidget):
         self.top = 100
         self.width = 503
         self.height = 316
+
+        self.username = username
+        self.subject = subject
 
         self.initUI()
 
@@ -76,6 +86,8 @@ class TeacherCreateTut(QWidget):
         self.returnButton.clicked.connect(self.returnPreviousWindow)
 
         self.setLayout(self.vBoxLayout)
+
+        self.inputBox1.setText(self.subject)
         self.show()
 
     def createTutorial(self):
@@ -87,11 +99,11 @@ class TeacherCreateTut(QWidget):
         numOfQuestion = int(numOfQuestion)
 
         if tutorialType == 'Fill in the Blank':
-            self.newWindow = TeacherCreateFiB.TeacherCreateFiB(subjectName, subjectCode, tutorialTitle, numOfQuestion)
+            self.newWindow = TeacherCreateFiB.TeacherCreateFiB(self.username,subjectName, subjectCode, tutorialTitle, numOfQuestion)
             self.newWindow.show()
             self.close()
         else:
-            self.newWindow = TeacherCreateMCQ.TeacherCreateMCQ(subjectName, subjectCode, tutorialNumber, numOfQuestion)
+            self.newWindow = TeacherCreateMCQ.TeacherCreateMCQ(self.username,subjectName, subjectCode, tutorialTitle, numOfQuestion)
             self.newWindow.show()
             self.close()
 
@@ -101,6 +113,9 @@ class TeacherCreateTut(QWidget):
         
         # add code to move to previous window once clicked
         # to-do
+        self.newWindow = TeaViewTutorial.TeaViewTutorial(self.username,self.subject)
+        self.newWindow.show()
+        self.hide()
 
 if __name__ == "__main__":
     App = QApplication(sys.argv)

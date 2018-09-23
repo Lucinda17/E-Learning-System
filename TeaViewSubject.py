@@ -10,11 +10,13 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 import TeacherProfile 
-#import TeaViewTutorial
+import TeaViewTutorial
+import Config
 
 cred = credentials.Certificate('./ServiceAccountKey.json')
 #default_app = firebase_admin.initialize_app(cred)
-db = firestore.client()
+#db = firestore.client()
+db = Config.db
 
 class TeaViewSubject(QWidget):
     def __init__(self, username):
@@ -93,6 +95,6 @@ class TeaViewSubject(QWidget):
         #print("you pressed -> ",sender.text())
         #self.newWindow = TeaViewTutorial.TeaViewTutorial(self.username, sender.text())
         #wait :below
-        self.newWindow = TeaViewTutorial.TeaViewTutorial(self.username,"English") 
+        self.newWindow = TeaViewTutorial.TeaViewTutorial(self.username,sender.text())
         self.newWindow.show()
         self.hide()

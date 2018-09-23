@@ -6,17 +6,20 @@ from PyQt5 import QtCore
 import sys
 from StudentProfile import *
 from Student import *
-from TeacherProfile import *
+#from TeacherProfile import *
+import TeacherProfile
 from Teacher import *
+import Config
 
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 import time
 
-cred = credentials.Certificate('ServiceAccountKey.json')
+#cred = credentials.Certificate('ServiceAccountKey.json')
 #default_app = firebase_admin.initialize_app(cred)
-db = firestore.client()
+#db = firestore.client()
+db = Config.db
 
 class Login(QWidget):
     def __init__(self):
@@ -166,7 +169,7 @@ class Login(QWidget):
                 if self.passLE.text()== user.to_dict()['password']:
                     
                     print("login - teacher")
-                    self.nd = TeacherProfile(user.to_dict()['username'])
+                    self.nd = TeacherProfile.TeacherProfile(user.to_dict()['username'])
                     self.nd.show()
                     self.hide()
                     break

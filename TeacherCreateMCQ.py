@@ -6,15 +6,32 @@ from PyQt5 import QtWidgets
 
 import sys
 
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+import TeacherCreateTut
+#import TeacherCreateFiB
+import Config
+#db = Config.db
+'''
+cred = credentials.Certificate('ServiceAccountKey.json')
+default_app = firebase_admin.initialize_app(cred)
+#default_app = firebase_admin.get_app()
+db = firestore.client()
+'''
+db = Config.db
+
 class TeacherCreateMCQ(QWidget):
-    def __init__(self, subjectName, subjectCode, tutorialNumber, numOfQuestion):
+    def __init__(self, username, subjectName, subjectCode, tutorialTitle, numOfQuestion):
         # set window title and sizes
         super().__init__()
         self.title = "Teacher: Create MCQ Question"
 
+        self.username = username
         self.subjectName = subjectName
         self.subjectCode = subjectCode
-        self.tutorialNumber = tutorialNumber
+        self.tutorialTitle= tutorialTitle
         self.numOfQuestion = numOfQuestion
         self.emptyline = QLabel("")
 
@@ -35,6 +52,7 @@ class TeacherCreateMCQ(QWidget):
         self.returnButton = QPushButton("Return", self)
         layout.addWidget(QLabel("Please enter questions and answers for this tutorial:"))
         
+        ans = 0
         for i in range(self.numOfQuestion):
             # add question
             layout.addWidget(QLabel("Question " + str(i+1)))
@@ -45,7 +63,9 @@ class TeacherCreateMCQ(QWidget):
             layout.addWidget(QLabel("Answers for 4 options"))
             for j in range(4):
                 self.inputBoxList2.append(QLineEdit())
-                layout.addWidget(QLineEdit())
+                layout.addWidget(self.inputBoxList2[ans])
+                ans += 1
+
             layout.addWidget(self.emptyline)
                     
         layout.addWidget(self.createButton)
@@ -72,9 +92,9 @@ class TeacherCreateMCQ(QWidget):
         answerList = []
         
         for i in range(self.numOfQuestion):
-            questionList[i] = self.inputBoxList1[i].text()
+            questionList.append(self.inputBoxList1[i].text())
         for j in range(self.numOfQuestion * 4):
-            answerList[i] = self.inputBoxList2[j].text()
+            answerList.append(self.inputBoxList2[j].text())
             
         # to-do
         # pass the question into database
@@ -83,6 +103,19 @@ class TeacherCreateMCQ(QWidget):
         # answerList[0] to answerList[3] is for Question 1
         # answerList[4] to answerList[7] is for Question 2
         # and so on....
+        users_ref = db.collection(u'tutorials')
+        users = users_ref.get()
+        doc_ref = db.collection(u'tutorials').document().set({
+            u'subject': self.subjectName,
+            u'code': self.subjectCode,
+            u'title': self.tutorialTitle,
+            u'numOfQuestion': self.numOfQuestion,
+            u'questionList': questionList,
+            u'answerList': answerList,
+            u'type': "MCQ"
+        })
+        confirm = QMessageBox.question(self, 'Successful', "Done!", QMessageBox.Ok)
+        self.returnPreviousWindow()
 
     def returnPreviousWindow(self):
         #FunctionNameofPreviousWindow()
@@ -90,6 +123,8 @@ class TeacherCreateMCQ(QWidget):
         
         # add code to move to previous window once clicked
         # to-do
+        self.newWindow = TeacherCreateTut.TeacherCreateTut(self.username, self.subjectName)
+        self.close()
 
 if __name__ == "__main__":
     App = QApplication(sys.argv)

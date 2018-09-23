@@ -11,10 +11,16 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 import StuViewSubject
+import Config
 
-cred = credentials.Certificate('./ServiceAccountKey.json')
+'''
+cred = credentials.Certificate('ServiceAccountKey.json')
 default_app = firebase_admin.initialize_app(cred)
 db = firestore.client()
+'''
+cred = Config.cred
+default_app = Config.default_app
+db = Config.db
 
 class StuViewTutorial(QWidget):
     def __init__(self, username, subject):
@@ -55,20 +61,21 @@ class StuViewTutorial(QWidget):
         self.hbox.addWidget(self.lbl)
         self.hbox.addStretch(1)
         self.vbox.addLayout(self.hbox)
-        users_ref = db.collection(u'tutorial')
+        users_ref = db.collection(u'tutorials')
         users = users_ref.get()
         
         self.vbox.addStretch(1)
         r = 0
         for user in users:
-            tutDetail = user.to_dict()['code']+": "+user.to_dict()['title']
-            tutDetailLbl = QLabel(tutDetail,self)
-            button = QPushButton("Attempt",self)
-            gridd = QGridLayout(self)
-            gridd.addWidget(tutDetailLbl,r,0,Qt.AlignRight)
-            gridd.addWidget(button,r,1,Qt.AlignLeft)
-            r += 1
-            self.vbox.addLayout(gridd)
+            if(user.to_dict()['subject']==self.subject):
+                tutDetail = user.to_dict()['code']+": "+user.to_dict()['title']
+                tutDetailLbl = QLabel(tutDetail,self)
+                button = QPushButton("Attempt",self)
+                gridd = QGridLayout(self)
+                gridd.addWidget(tutDetailLbl,r,0,Qt.AlignRight)
+                gridd.addWidget(button,r,1,Qt.AlignLeft)
+                r += 1
+                self.vbox.addLayout(gridd)
         
         self.vbox.addStretch(20)
         self.setLayout(self.vbox)

@@ -11,17 +11,22 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 import TeacherCreateTut
+import Config
 
-cred = credentials.Certificate('./ServiceAccountKey.json')
+'''
+cred = credentials.Certificate('ServiceAccountKey.json')
 default_app = firebase_admin.initialize_app(cred)
 db = firestore.client()
+'''
+db = Config.db
 
 class TeacherCreateFiB(QWidget):
-    def __init__(self, subjectName, subjectCode, tutorialTitle, numOfQuestion):
+    def __init__(self, username, subjectName, subjectCode, tutorialTitle, numOfQuestion):
         # set window title and sizes
         super().__init__()
         self.title = "Teacher: Create FiB Question"
         
+        self.username = username
         self.subjectName = subjectName
         self.subjectCode = subjectCode
         self.tutorialTitle= tutorialTitle
@@ -90,9 +95,9 @@ class TeacherCreateFiB(QWidget):
             
         # to-do
         # pass the question into database
-        users_ref = db.collection(u'tutorial')
+        users_ref = db.collection(u'tutorials')
         users = users_ref.get()
-        doc_ref = db.collection(u'tutorial').document().set({
+        doc_ref = db.collection(u'tutorials').document().set({
             u'subject': self.subjectName,
             u'code': self.subjectCode,
             u'title': self.tutorialTitle,
@@ -110,7 +115,7 @@ class TeacherCreateFiB(QWidget):
         
         # add code to move to previous window once clicked
         # to-do
-        self.newWindow = TeacherCreateTut.TeacherCreateTut()
+        self.newWindow = TeacherCreateTut.TeacherCreateTut(self.username, self.subjectName)
         self.close()
 
 if __name__ == "__main__":
