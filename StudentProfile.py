@@ -6,7 +6,8 @@ from PyQt5 import QtWidgets
 import sys
 
 from StuViewSubject import *
-from Student import *
+import Login
+import Config
 
 import firebase_admin
 from firebase_admin import credentials
@@ -53,28 +54,69 @@ class StudentProfile(QWidget):
         self.show()
 
     def addComponents(self):
-        self.viewSubject = QPushButton("View Subject",self)
-        self.viewSubject.resize(200,60)
-        self.viewSubject.move(100,100)
+        self.name = ""
+        self.subjectEnrolled = ""
+        users_ref = db.collection(u'students')
+        users = users_ref.get()
+        
+        for user in users:
+            if(user.to_dict()['username']==self.username):
+                self.name = user.to_dict()['name']
+                for i in user.to_dict()['subjects']:
+                    self.subjectEnrolled = self.subjectEnrolled+i+", "
+
+
+        profileLbl = QLabel("Student Profile", self)
+        profileLbl.setFixedHeight(100)
+        profileLbl.setStyleSheet("QLabel{font-size: 70px}")
+        profileLbl.move(700,100)
+        #
+        #View Subject Button
+        self.viewSubject = QPushButton("View Subject ",self)
+        self.viewSubject.resize(200,100)
+        self.viewSubject.move(1200,800)
         self.viewSubject.clicked.connect(self.viewSubjectClicked)
-        self.stu = Student()
-        self.stu.username = self.username
-        self.name = "Name: " + self.username
-        self.nameLbl = QLabel(self.name, self)
-        self.nameLbl.setFixedWidth(1000)
-        self.nameLbl.setFixedHeight(100)
-        '''
-        #---- For testing ----
-        self.viewSubjectClicked()
-        self.hide()
-        #---------------------
-        '''
+
+        #discussionBoard Button(stub)
+        self.discussionBoard = QPushButton("Access to Discussion Board",self)
+        self.discussionBoard.resize(200,100)
+        self.discussionBoard.move(800,800)
+
+        #Student Performance Button(stub)
+        self.stuPerform = QPushButton("Access to Performance Analysis",self)
+        self.stuPerform.resize(200,100)
+        self.stuPerform.move(400,800)
+
+        #Name Label
+        self.nameLabel="Name:                           "+self.name
+        nameLbl = QLabel(self.nameLabel, self)
+        nameLbl.setStyleSheet("QLabel{font-size: 40px}")
+        nameLbl.move(400,300)
+
+        self.idLabel=  "ID:                                      "+self.username
+        idLbl = QLabel(self.idLabel, self)
+        idLbl.setStyleSheet("QLabel{font-size: 40px}")
+        idLbl.move(400,400)
+                                
+        self.subLabel="Subject Enrolled:                  "+self.subjectEnrolled
+        subLbl = QLabel(self.subLabel, self)
+        subLbl.setStyleSheet("QLabel{font-size: 40px}")
+        subLbl.move(400,500)
+
+        self.createTutBtn = QPushButton("Back", self)
+        self.createTutBtn .resize(100, 40)
+        self.createTutBtn .clicked.connect(self.backClicked)
 
     def viewSubjectClicked(self):
         self.newWindow = StuViewSubject(self.username)
         self.newWindow.show()
         self.close()
 
+    def backClicked(self):
+        self.newWindow = Login.Login()
+        self.newWindow.show()
+        self.hide()
+ 
         
 if __name__ == "__main__":
     app = QApplication(sys.argv)

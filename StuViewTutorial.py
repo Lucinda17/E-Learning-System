@@ -11,6 +11,8 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 import StuViewSubject
+import StudentAttemptFiB
+import StudentAttemptMCQ
 import Config
 
 '''
@@ -51,34 +53,95 @@ class StuViewTutorial(QWidget):
 
     def addComponents(self):
         self.backBtn = QPushButton("Back", self)
-        self.createTutBtn .resize(100, 40)
-        self.createTutBtn .clicked.connect(self.backClicked)
-        self.lbl = QLabel(self.subject,self)
-        self.vbox = QVBoxLayout(self)
-        self.hbox = QHBoxLayout(self)
+        self.backBtn.resize(100, 40)
+        self.backBtn.clicked.connect(self.backClicked)
+
+        self.vbox = QVBoxLayout(self);
+        hbox = QVBoxLayout(self);
+        empty = QLabel("", self)
+        vbox00 = QVBoxLayout(self)
+        vbox00.addWidget(empty)
+
+        space = " "*83
+        self.title = space + "Subect: " + self.subject
+        self.lbl = QLabel(self.title,self)
         self.vbox.addStretch(1)
-        self.hbox.addStretch(1)
-        self.hbox.addWidget(self.lbl)
-        self.hbox.addStretch(1)
-        self.vbox.addLayout(self.hbox)
+        hbox.addLayout(vbox00)
+        hbox.addWidget(self.lbl)
+        self.vbox.addLayout(hbox)
+        
+        self.vbox.addLayout(vbox00)
+        codeLbl1 = QLabel("Code", self)
+        titleLbl1 = QLabel("Title", self)
+        typeLbl1 = QLabel("Type", self)
+
+        vbox11 = QVBoxLayout(self)
+        vbox11.addWidget(empty)
+        vbox21 = QVBoxLayout(self)
+        vbox21.addWidget(empty)
+        vbox31 = QVBoxLayout(self)
+        vbox31.addWidget(empty)
+        vbox41 = QVBoxLayout(self)
+        vbox41.addWidget(empty)
+
+        hbox11 = QHBoxLayout(self)
+        hbox11.addLayout(vbox11)
+        hbox11.addWidget(codeLbl1)
+        hbox11.addWidget(titleLbl1)
+        hbox11.addWidget(typeLbl1)
+        hbox11.addLayout(vbox21)
+        hbox11.addLayout(vbox31)
+        hbox11.addLayout(vbox41)
+        
         users_ref = db.collection(u'tutorials')
         users = users_ref.get()
-        
-        self.vbox.addStretch(1)
-        r = 0
+        self.vbox.addLayout(hbox11)
+        self.btnList = []
+        self.codeList = []
+        self.tTypeList = []
         for user in users:
             if(user.to_dict()['subject']==self.subject):
-                tutDetail = user.to_dict()['code']+": "+user.to_dict()['title']
-                tutDetailLbl = QLabel(tutDetail,self)
-                button = QPushButton("Attempt",self)
-                gridd = QGridLayout(self)
-                gridd.addWidget(tutDetailLbl,r,0,Qt.AlignRight)
-                gridd.addWidget(button,r,1,Qt.AlignLeft)
-                r += 1
-                self.vbox.addLayout(gridd)
+                hbox1 = QHBoxLayout(self)
+                code = user.to_dict()['code']
+                title = user.to_dict()['title']
+                tType = user.to_dict()['type']
+                if(tType == "FiB"):
+                    tType = "Fill in the Blank"
+                else:
+                    tType = "Multiple Choice Quesiton"
+
+                codeLbl = QLabel(code, self)
+                titleLbl = QLabel(title, self)
+                typeLbl = QLabel(tType, self)
+                empty = QLabel("", self)
+
+                attemptBtn= QPushButton("Attempt",self)
+                attemptBtn.clicked.connect(self.attemptClicked)
+                viewBtn= QPushButton("View Result",self)
+
+
+                self.btnList.append(attemptBtn)
+                self.codeList.append(code)
+                self.tTypeList.append(tType)
+
+                vbox1 = QVBoxLayout(self)
+                vbox1.addWidget(empty)
+                vbox2 = QVBoxLayout(self)
+                vbox2.addWidget(empty)
+
+                hbox1.addLayout(vbox1)
+                hbox1.addWidget(codeLbl)
+                hbox1.addWidget(titleLbl)
+                hbox1.addWidget(typeLbl)
+                hbox1.addWidget(attemptBtn)
+                hbox1.addWidget(viewBtn)
+                hbox1.addLayout(vbox2)
+                
+                self.vbox.addLayout(hbox1)
         
         self.vbox.addStretch(20)
         self.setLayout(self.vbox)
+
 
     def backClicked(self):
         self.hide()
@@ -86,9 +149,33 @@ class StuViewTutorial(QWidget):
         self.newWindow.show()
         self.hide()
 
+    def attemptClicked(self):
+        sender = self.sender()
+        index = 0
+        for i in range(len(self.btnList)):
+            if(self.btnList[i]==sender):
+                index = i
+        
+        print("\ncode: ",self.codeList[index])
+        print("Type: ",self.tTypeList[index])
+
+        if self.tTypeList[index] == "Fill in the Blank":
+            self.newWindow = StudentAttemptFiB.StudentAttemptFiB(self.username,self.subject,self.codeList[index])
+            self.newWindow.show()
+
+        else:
+            '''
+            self.newWindow = StudentAttemptMCQ.StudentAttemptMCQ(subject, code)
+            self.newWindow.show()
+            self.hide
+            '''
+        
+
+        self.hide()
+
 
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = StuViewTutorial(1161302962,"English")
+    MainWindow = StuViewTutorial(1161302962,"Mathematics")
     sys.exit(app.exec_())

@@ -149,8 +149,8 @@ class Login(QWidget):
         
         
         #---- For testing ----
-        self.userLE.setText("1234567890")
-        self.passLE.setText("Bb7777")
+        self.userLE.setText("1161302962")
+        self.passLE.setText("Aa1111")
 
         #---------------------
         

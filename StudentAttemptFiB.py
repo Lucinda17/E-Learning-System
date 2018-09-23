@@ -5,18 +5,24 @@ from PyQt5.QtCore import *
 from PyQt5 import QtWidgets
 
 import sys
-import StudentAttemptTut
+import StuViewTutorial
+import Config
+
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+db = Config.db
 
 class StudentAttemptFiB(QWidget):
-    def __init__(self):
+    def __init__(self,username,subject,code):
         # set window title and sizes
         super().__init__()
         self.title = "Student: Attempt FiB Question"
 
-        self.subjectName = "English"
-        self.subjectCode = "TCP2011"
-        self.tutorialNumber = "Tutorial 1"
-        self.numOfQuestion = 3
+        self.username = username
+        self.subject = subject
+        self.code = code 
         self.emptyline = QLabel("")
 
         self.initUI()
@@ -32,14 +38,23 @@ class StudentAttemptFiB(QWidget):
 
         # add components into window
         # to-do: import question and answer from tutorial database
-        self.questionList = ["3+3=", "2+2=", "1+1="]
-        self.answerList = [6, 4, 2]
+        self.questionList = []
+        self.answerList = []
         self.inputBoxList = []
         self.submitButton = QPushButton("Submit", self)
         self.returnButton = QPushButton("Return", self)
         layout.addWidget(QLabel("Please enter answers for this tutorial:"))
 
-        for i in range(self.numOfQuestion):
+        users_ref = db.collection(u'tutorials')
+        users = users_ref.get()
+        for user in users:
+            if(user.to_dict()['subject']==self.subject):
+                self.questionList = user.to_dict()['questionList']
+                self.answerList = user.to_dict()['answerList']
+                break
+
+
+        for i in range(len(self.questionList)):
             # add question
             layout.addWidget(QLabel("Question " + str(i+1)))
             layout.addWidget(QLabel(self.questionList[i]))
@@ -71,16 +86,30 @@ class StudentAttemptFiB(QWidget):
 
     def submitAnswer(self):
         userAnswerList = []
-
-        for i in range(self.numOfQuestion):
-            userAnswerList[i] = self.inputBoxList[i].text()
+        for i in range(len(self.questionList)):
+            userAnswerList.append(self.inputBoxList[i].text())
 
         # to-do
         # pass the answer by student to database
         # or pass the answer to this module first, then check answer?
+        message = ""
+        marks = 0
+        for userAns,correctAns in zip(userAnswerList, self.answerList):
+            message += "Your answer: "+userAns+" Correct answer: "+correctAns
+            if(userAns == correctAns):
+                marks += 1
+                message += "  Correct!"
+            else:
+                message += "  Wrong"
+
+            message += "\n"
+        
+        message += "\nTotal mark >> "+str(marks)+"/"+str(len(self.questionList))
+        result = QMessageBox.question(self, "Result", message, QMessageBox.Ok)
+        self.returnPreviousWindow()
 
     def returnPreviousWindow(self):
-        self.newWindow = StudentAttemptTut.StudentAttemptTut()
+        self.newWindow = StuViewTutorial.StuViewTutorial(self.username,self.subject)
         self.newWindow.show()
         self.close()
 
