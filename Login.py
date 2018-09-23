@@ -6,13 +6,15 @@ from PyQt5 import QtCore
 import sys
 from StudentProfile import *
 from Student import *
+from TeacherProfile import *
+from Teacher import *
 
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 import time
 
-cred = credentials.Certificate('./ServiceAccountKey.json')
+cred = credentials.Certificate('ServiceAccountKey.json')
 #default_app = firebase_admin.initialize_app(cred)
 db = firestore.client()
 
@@ -142,14 +144,13 @@ class Login(QWidget):
                                      "QPushButton{border-radius: 115px}"
                                      "QPushButton{color: #FFFFFF}")
         
-        '''
+        
         #---- For testing ----
-        self.userLE.setText("1161302962")
-        self.passLE.setText("Aa1111")
-        self.LoginClicked()
-        self.hide()
+        self.userLE.setText("1234567890")
+        self.passLE.setText("Bb7777")
+
         #---------------------
-        '''
+        
         
     def LoginClicked(self):
         self.ULELbl.move(9999,9999)
@@ -163,8 +164,9 @@ class Login(QWidget):
                 found = True
                 # Check password
                 if self.passLE.text()== user.to_dict()['password']:
-                    # TODO - Change to TeacherProfile()
-                    self.nd = StudentProfile()
+                    # TODO - Change to TeacherProfile()#CHANGE made
+                    print("login - teacher")
+                    self.nd = TeacherProfile(user.to_dict()['username'])
                     self.nd.show()
                     self.hide()
                     break
@@ -224,8 +226,8 @@ class Login(QWidget):
                 })
                 
                 confirmMB = QMessageBox.question(self, 'Successful', "Sign up successful", QMessageBox.Ok)
-                # TODO - Change to TeacherProfile() later
-                self.nd = StudentProfile()
+                # TODO - Change to TeacherProfile() later CHANGE made
+                self.nd = TeacherProfile()
                 self.nd.show()
                 self.hide()
             # not found in teachers
@@ -286,6 +288,17 @@ class Login(QWidget):
             #print(u'{} => {} : {}'.format(user.id, user.to_dict()['username'], user.to_dict()['password']))
         print("----- end of Students -----\n")
 
+
+ 
+        users_ref = db.collection(u'teachers')
+        users = users_ref.get()
+        print("----- Teachers -----")
+        for user in users:
+            self.usersDict[user.to_dict()['username']] = user.to_dict()['password']
+            print(f"{user.to_dict()['username']} : {user.to_dict()['name']} : {user.to_dict()['password']}")
+            #print(u'{} => {} : {}'.format(user.id, user.to_dict()['username'], user.to_dict()['password']))
+        print("----- end of Teachers -----\n")
+        
     def SignUpTabClicked(self):
         self.SignUpTab.setStyleSheet("QPushButton{background-color: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FBC2EB,stop: 1 #A6C1EE)}"
                                     "QPushButton{border-radius: 115px;}"
