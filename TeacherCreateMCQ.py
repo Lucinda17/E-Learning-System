@@ -69,8 +69,6 @@ class TeacherCreateMCQ(QWidget):
 
             layout.addWidget(self.emptyline)
                     
-        layout.addWidget(self.createButton)
-        layout.addWidget(self.returnButton)
 
         self.createButton.clicked.connect(self.enterQuestion)
         self.returnButton.clicked.connect(self.returnPreviousWindow)
@@ -85,6 +83,10 @@ class TeacherCreateMCQ(QWidget):
         self.scroll.setWidget(widget)
         self.vLayout = QVBoxLayout(self)
         self.vLayout.addWidget(self.scroll)
+        self.hbox = QHBoxLayout(self)
+        self.hbox.addWidget(self.createButton)
+        self.hbox.addWidget(self.returnButton)
+        self.vLayout.addLayout(self.hbox)
         self.setLayout(self.vLayout)
         self.showMaximized()
 
@@ -119,10 +121,6 @@ class TeacherCreateMCQ(QWidget):
         self.returnPreviousWindow()
 
     def returnPreviousWindow(self):
-        self.newWindow = TeacherCreateTut.TeacherCreateTut()
-        self.newWindow.show()
-        self.close()
-        
         # add code to move to previous window once clicked
         # to-do
         self.newWindow = TeacherCreateTut.TeacherCreateTut(self.username, self.subjectName)
