@@ -6,6 +6,7 @@ from PyQt5 import QtWidgets
 
 import sys
 import StudentAttemptFiB
+import StudentAttemptMCQ
 
 class StudentAttemptTut(QWidget):
     def __init__(self):
@@ -112,6 +113,9 @@ class StudentAttemptTut(QWidget):
             self.newWindow.show()
             self.close()
             '''
+            self.newWindow = StudentAttemptFiB.StudentAttemptFiB()
+            self.newWindow.show()
+            self.close()
 
             # to implement this when added firebase
             # self.newWindow = StudentAttemptFiB.StudentAttemptFiB(self.subject, tutNum)
@@ -122,6 +126,9 @@ class StudentAttemptTut(QWidget):
             self.newWindow.show()
             self.close()
             '''
+            self.newWindow = StudentAttemptMCQ.StudentAttemptMCQ()
+            self.newWindow.show()
+            self.close()
             
             # to implement this when added firebase
             # self.newWindow = StudentAttemptFiB.StudentAttemptFiB(self.subject, tutNum)
