@@ -137,7 +137,7 @@ class Login(QWidget):
         self.readBtn.move(self.left-100, 320+self.top)
         self.readBtn.resize(200,36)
         self.readBtn.clicked.connect(self.ReadClicked)
-        self.readBtn.setVisible(True)
+        self.readBtn.setVisible(False)
 
         self.signupBtn = QPushButton("Sign up",self)
         self.signupBtn.move(9999,9999)
@@ -148,11 +148,13 @@ class Login(QWidget):
                                      "QPushButton{color: #FFFFFF}")
         
         
+        '''
         #---- For testing ----
         self.userLE.setText("1161302962")
         self.passLE.setText("Aa1111")
 
         #---------------------
+        '''
         
         
     def LoginClicked(self):

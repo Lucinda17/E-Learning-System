@@ -5,18 +5,25 @@ from PyQt5.QtCore import *
 from PyQt5 import QtWidgets
 
 import sys
-import StudentAttemptTut
+import StuViewTutorial
+import Config
+
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+db = Config.db
 
 class StudentAttemptMCQ(QWidget):
-    def __init__(self):
+    def __init__(self,username, subject, code):
         # set window title and sizes
         super().__init__()
         self.title = "Student: Attempt MCQ Question"
 
-        self.subjectName = "English"
-        self.subjectCode = "TCP2011"
-        self.tutorialNumber = "Tutorial 1"
-        self.numOfQuestion = 4
+        
+        self.username = username
+        self.subject = subject
+        self.code = code 
         self.emptyline = QLabel("")
 
         self.initUI()
@@ -32,38 +39,47 @@ class StudentAttemptMCQ(QWidget):
 
         # add components into window
         # to-do: import question and answer from tutorial database
-        self.questionList = ["3+3=", "2+2=", "1+1=", "10+5"]
-        self.answerList = [6, 4, 2, 15]
+        self.questionList = []
+        self.answerList = []
+        self.correctList = []
         self.inputBoxList = []
         self.submitButton = QPushButton("Submit", self)
         self.returnButton = QPushButton("Return", self)
         layout.addWidget(QLabel("Please enter answers for this tutorial:"))
 
-        self.question1Option = [2, 4, 6 ,8]
-        self.question2Option = [2, 4, 6 ,8]
-        self.question3Option = [2, 4, 5 ,6]
-        self.question4Option = [12, 13, 14 ,15]
+        self.questionOption = []
+        self.radioButtons = []
+        self.all = []
 
-        self.radioButtons1 = []
-        self.radioButtons2 = []
-        self.radioButtons3 = []
-        self.radioButtons4 = []
-        self.radioButtons = [self.radioButtons1, self.radioButtons2, self.radioButtons3, self.radioButtons4]
+        users_ref = db.collection(u'tutorials')
+        users = users_ref.get()
+        for user in users:
+            if(user.to_dict()['code']==self.code):
+                self.questionList = user.to_dict()['questionList']
+                self.answerList = user.to_dict()['answerList']
+                self.correctList = user.to_dict()['correctList']
+                break
+        
+        for i in range(len(self.questionList)*4):
+            self.all.append(QRadioButton(self.answerList[i]))
 
-        for i in range(4):
-            self.radioButtons1.append(QRadioButton(str(self.question1Option[i]), self))
-            self.radioButtons2.append(QRadioButton(str(self.question2Option[i]), self))
-            self.radioButtons3.append(QRadioButton(str(self.question3Option[i]), self))
-            self.radioButtons4.append(QRadioButton(str(self.question4Option[i]), self))
+        print(self.answerList)
+        k = 0
+        for i in range(len(self.questionList)):
+            for j in range(4):
+                self.radioButtons.append(self.all[k])
+                k += 1
 
-        for i in range(self.numOfQuestion):
+
             # add question
             layout.addWidget(QLabel("Question " + str(i+1)))
             layout.addWidget(QLabel(self.questionList[i]))
             
             # add radio buttons
-            layout.addWidget(self.createAnswerGroup(self.radioButtons, i))
+            layout.addWidget(self.createAnswerGroup(self.radioButtons))
+            self.radioButtons.clear()
             layout.addWidget(self.emptyline)
+
 
         layout.addWidget(self.submitButton)
         layout.addWidget(self.returnButton)
@@ -84,12 +100,12 @@ class StudentAttemptMCQ(QWidget):
         self.setLayout(self.vLayout)
         self.showMaximized()
                          
-    def createAnswerGroup(self, radioButtons, questionNum):
+    def createAnswerGroup(self, radioButtons):
         groupBox = QGroupBox()
         vBox = QVBoxLayout()
 
         for i in range(4):
-            vBox.addWidget(radioButtons[questionNum][i])
+            vBox.addWidget(radioButtons[i])
         groupBox.setLayout(vBox)
         return groupBox
             
@@ -97,15 +113,36 @@ class StudentAttemptMCQ(QWidget):
     def submitAnswer(self):
         userAnswerList = []
 
-        for i in range(self.numOfQuestion):
-            userAnswerList[i] = self.inputBoxList[i].text()
+        for i in range(len(self.questionList)*4):
+            print(self.all[i].text())
+            print(self.all[i].isChecked())
+            if self.all[i].isChecked()==True:
+                userAnswerList.append(self.all[i].text())
+        
+        print()
+        print(userAnswerList)
 
         # to-do
         # pass the answer by student to database
         # or pass the answer to this module first, then check answer?
+        message = ""
+        marks = 0
+        for userAns,correctAns in zip(userAnswerList, self.correctList):
+            message += "Your answer: "+userAns+" Correct answer: "+correctAns
+            if(userAns == correctAns):
+                marks += 1
+                message += "  Correct!"
+            else:
+                message += "  Wrong"
+
+            message += "\n"
+        
+        message += "\nTotal mark >> "+str(marks)+"/"+str(len(self.questionList))
+        result = QMessageBox.question(self, "Result", message, QMessageBox.Ok)
+        self.returnPreviousWindow()
 
     def returnPreviousWindow(self):
-        self.newWindow = StudentAttemptTut.StudentAttemptTut()
+        self.newWindow = StuViewTutorial.StuViewTutorial(self.username,self.subject)
         self.newWindow.show()
         self.close()
 

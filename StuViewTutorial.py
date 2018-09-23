@@ -164,11 +164,9 @@ class StuViewTutorial(QWidget):
             self.newWindow.show()
 
         else:
-            '''
-            self.newWindow = StudentAttemptMCQ.StudentAttemptMCQ(subject, code)
+            self.newWindow = StudentAttemptMCQ.StudentAttemptMCQ(self.username,self.subject,self.codeList[index])
             self.newWindow.show()
             self.hide
-            '''
         
 
         self.hide()

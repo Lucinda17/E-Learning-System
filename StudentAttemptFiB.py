@@ -48,7 +48,7 @@ class StudentAttemptFiB(QWidget):
         users_ref = db.collection(u'tutorials')
         users = users_ref.get()
         for user in users:
-            if(user.to_dict()['subject']==self.subject):
+            if(user.to_dict()['code']==self.code):
                 self.questionList = user.to_dict()['questionList']
                 self.answerList = user.to_dict()['answerList']
                 break

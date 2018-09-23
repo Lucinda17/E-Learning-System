@@ -48,6 +48,7 @@ class TeacherCreateMCQ(QWidget):
         # add components into window
         self.inputBoxList1 = []
         self.inputBoxList2 = []
+        self.inputBoxList3 = []
 
         self.createButton = QPushButton("Create", self)
         self.returnButton = QPushButton("Return", self)
@@ -66,6 +67,9 @@ class TeacherCreateMCQ(QWidget):
                 self.inputBoxList2.append(QLineEdit())
                 layout.addWidget(self.inputBoxList2[ans])
                 ans += 1
+            self.inputBoxList3.append(QLineEdit())
+            layout.addWidget(QLabel("Correct Answer"))
+            layout.addWidget(self.inputBoxList3[i])
 
             layout.addWidget(self.emptyline)
                     
@@ -92,10 +96,13 @@ class TeacherCreateMCQ(QWidget):
 
     def enterQuestion(self):
         questionList = []
+        correctList = []
         answerList = []
         
         for i in range(self.numOfQuestion):
             questionList.append(self.inputBoxList1[i].text())
+            correctList.append(self.inputBoxList3[i].text())
+
         for j in range(self.numOfQuestion * 4):
             answerList.append(self.inputBoxList2[j].text())
             
@@ -115,6 +122,7 @@ class TeacherCreateMCQ(QWidget):
             u'numOfQuestion': self.numOfQuestion,
             u'questionList': questionList,
             u'answerList': answerList,
+            u'correctList': correctList,
             u'type': "MCQ"
         })
         confirm = QMessageBox.question(self, 'Successful', "Done!", QMessageBox.Ok)
