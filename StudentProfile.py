@@ -34,7 +34,7 @@ class StudentProfile(QWidget):
             }
 
             QLabel{
-                font-size: 23px;
+                font-size: 30px;
             }
         """
         self.InitWindow()
@@ -81,6 +81,11 @@ class StudentProfile(QWidget):
         self.discussionBoard = QPushButton("Access to Discussion Board",self)
         self.discussionBoard.resize(200,100)
         self.discussionBoard.move(800,800)
+        self.discussionBoard.setStyleSheet("QPushButton{background-color: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FBC2EB,stop: 1 #A6C1EE)}"
+                                     "QPushButton{border-radius: 115px}"
+                                     "QPushButton{color: #FFFFFF}"
+                                     "QPushButton{font-size: 70px")
+        
 
         #Student Performance Button(stub)
         self.stuPerform = QPushButton("Access to Performance Analysis",self)

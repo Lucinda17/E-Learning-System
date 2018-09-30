@@ -5,6 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5 import QtCore
 import sys
 from StudentProfile import *
+import StudentProfile
 from Student import *
 #from TeacherProfile import *
 import TeacherProfile
@@ -189,7 +190,8 @@ class Login(QWidget):
                     found = True
                     # Check password
                     if self.passLE.text()== user.to_dict()['password']:
-                        self.nd = StudentProfile(user.to_dict()['username'])
+                        a = self.userLE.text()
+                        self.nd = StudentProfile.StudentProfile(a)
                         self.nd.show()
                         self.hide()
                         break
@@ -261,7 +263,7 @@ class Login(QWidget):
                             u'name': self.nameLE.text()
                         })
                         confirmMB = QMessageBox.question(self, 'Successful', "Sign up successful", QMessageBox.Ok)
-                        self.nd = StudentProfile()
+                        self.nd = StudentProfile.StudentProfile(self.userLE.text())
                         self.nd.show()
                         self.hide()
                 # not found in students
