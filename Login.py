@@ -137,7 +137,7 @@ class Login(QWidget):
         self.readBtn.move(self.left-100, 320+self.top)
         self.readBtn.resize(200,36)
         self.readBtn.clicked.connect(self.ReadClicked)
-        self.readBtn.setVisible(False)
+        self.readBtn.setVisible(True)
 
         self.signupBtn = QPushButton("Sign up",self)
         self.signupBtn.move(9999,9999)
@@ -232,7 +232,7 @@ class Login(QWidget):
                 
                 confirmMB = QMessageBox.question(self, 'Successful', "Sign up successful", QMessageBox.Ok)
                
-                self.nd = TeacherProfile()
+                self.nd = TeacherProfile.TeacherProfile(user.to_dict()['username'])
                 self.nd.show()
                 self.hide()
             # not found in teachers
