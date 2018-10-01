@@ -19,6 +19,7 @@ class StudentAttemptTut(QWidget):
         self.height = 200
         
         self.initUI()
+        self.setStyleSheet(self.stylesheet)
 
     def initUI(self):
         self.setWindowTitle(self.title)
@@ -46,16 +47,20 @@ class StudentAttemptTut(QWidget):
         self.emptyline = QLabel("")
 
         self.tut1 = QLabel("Tutorial 1")
+        self.tut1.setStyleSheet("QLabel{font-size: 17px")
         self.tut2 = QLabel("Tutorial 2")
         self.tut3 = QLabel("Tutorial 3")
         self.tut4 = QLabel("Tutorial 4")
 
         self.tut1type = QLabel("Fill in the Blank")
+        self.tut1type.setStyleSheet("QLabel{font-size: 17px")
         self.tut2type = QLabel("Multiple Choice Question")
         self.tut3type = QLabel("Fill in the Blank")
         self.tut4type = QLabel("Multiple Choice Question")
 
         self.attemptButton1 = QPushButton("Attempt", self)
+        self.attemptButton1.setStyleSheet("QPushButton{font-size: 17px")
+        self.attemptButton1.resize(100,100)
         self.attemptButton2 = QPushButton("Attempt", self)
         self.attemptButton3 = QPushButton("Attempt", self)
         self.attemptButton4 = QPushButton("Attempt", self)
