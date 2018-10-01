@@ -191,7 +191,9 @@ class Login(QWidget):
                     # Check password
                     if self.passLE.text()== user.to_dict()['password']:
                         a = self.userLE.text()
-                        self.nd = StudentProfile.StudentProfile(a)
+
+                        self.nd = StudentProfile.StudentProfile(user.to_dict()['username'])
+
                         self.nd.show()
                         self.hide()
                         break
