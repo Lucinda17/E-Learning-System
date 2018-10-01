@@ -31,9 +31,10 @@ class TeacherProfile(QWidget):
 
         self.stylesheet = """
             QPushButton{
-                background-color: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FBC2EB,stop: 1 #A6C1EE);
+                background-color: #3498db;
                 border-radius: 115px;
                 color: #FFFFFF;
+                font-size: 20px;
             }
 
             QLabel{
@@ -76,18 +77,18 @@ class TeacherProfile(QWidget):
         #
         #View Subject Button
         self.viewSubject = QPushButton("View Subject ",self)
-        self.viewSubject.resize(200,100)
+        self.viewSubject.resize(300,100)
         self.viewSubject.move(1200,800)
         self.viewSubject.clicked.connect(self.viewSubjectClicked)
 
         #discussionBoard Button(stub)
         self.discussionBoard = QPushButton("Access to Discussion Board",self)
-        self.discussionBoard.resize(200,100)
+        self.discussionBoard.resize(300,100)
         self.discussionBoard.move(800,800)
 
         #Student Performance Button(stub)
         self.stuPerform = QPushButton("Access to Student Performance",self)
-        self.stuPerform.resize(200,100)
+        self.stuPerform.resize(300,100)
         self.stuPerform.move(400,800)
 
         #Name Label

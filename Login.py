@@ -86,7 +86,7 @@ class Login(QWidget):
         #*******************************************************************************
         loginLbl.move(self.loginLbl_X,self.loginLbl_Y)
         self.userLE = QLineEdit(self)
-        self.userLE.setPlaceholderText("  username")
+        self.userLE.setPlaceholderText("  username(id)")
         self.userLE.resize(200, 26)
         self.userLE.move(self.userLE_X,self.userLE_Y)
         self.passLE = QLineEdit(self)
@@ -113,9 +113,11 @@ class Login(QWidget):
         self.LoginTab = QPushButton("Login", self)
         self.LoginTab.move(self.left-100,150+self.top)
         self.LoginTab.resize(100,36)
-        self.LoginTab.setStyleSheet("QPushButton{background-color: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FBC2EB,stop: 1 #A6C1EE)}"
+        self.LoginTab.setStyleSheet("QPushButton{background-color: #3498db}"
                                     "QPushButton{border-radius: 115px}"
-                                    "QPushButton{color: #FFFFFF}")
+                                    "QPushButton{color: #FFFFFF}"
+                                    "QPushButton{font-size:17px}")
+                                    
         self.LoginTab.clicked.connect(self.LoginTabClicked)
 
         self.SignUpTab = QPushButton("Sign up", self)
@@ -123,16 +125,18 @@ class Login(QWidget):
         self.SignUpTab.resize(100,36)
         self.SignUpTab.setStyleSheet("QPushButton{background-color: white}"
                                      "QPushButton{border-radius: 115px}"
-                                     "QPushButton{color: #8e838e}")
+                                     "QPushButton{color: #8e838e}"
+                                     "QPushButton{font-size:17px}")
         self.SignUpTab.clicked.connect(self.SignUpTabClicked)
 
         self.loginBtn = QPushButton("Log in",self)
         self.loginBtn.move(self.left-100, 280+self.top)
         self.loginBtn.resize(200,36)
         self.loginBtn.clicked.connect(self.LoginClicked)
-        self.loginBtn.setStyleSheet("QPushButton{background-color: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FBC2EB,stop: 1 #A6C1EE)}"
+        self.loginBtn.setStyleSheet("QPushButton{background-color: #3498db}"
                                     "QPushButton{border-radius: 115px}"
-                                    "QPushButton{color: #FFFFFF}")
+                                    "QPushButton{color: #FFFFFF}"
+                                    "QPushButton{font-size:17px}")
 
         self.readBtn = QPushButton("Read", self)
         self.readBtn.move(self.left-100, 320+self.top)
@@ -144,9 +148,10 @@ class Login(QWidget):
         self.signupBtn.move(9999,9999)
         self.signupBtn.resize(200,36)
         self.signupBtn.clicked.connect(self.SignUpClicked)
-        self.signupBtn.setStyleSheet("QPushButton{background-color: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FBC2EB,stop: 1 #A6C1EE)}"
+        self.signupBtn.setStyleSheet("QPushButton{background-color:#3498db}"
                                      "QPushButton{border-radius: 115px}"
-                                     "QPushButton{color: #FFFFFF}")
+                                     "QPushButton{color: #FFFFFF}"
+                                     "QPushButton{font-size:17px}")
         
         
         '''
@@ -309,12 +314,14 @@ class Login(QWidget):
         print("----- end of Teachers -----\n")
         
     def SignUpTabClicked(self):
-        self.SignUpTab.setStyleSheet("QPushButton{background-color: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FBC2EB,stop: 1 #A6C1EE)}"
+        self.SignUpTab.setStyleSheet("QPushButton{background-color: #3498db}"
                                     "QPushButton{border-radius: 115px;}"
-                                    "QPushButton{color: #FFFFFF}")
+                                    "QPushButton{color: #FFFFFF}"
+                                    "QPushButton{font-size:17px}")
         self.LoginTab.setStyleSheet("QPushButton{background-color: white}"
                                     "QPushButton{border-radius: 115px}"
-                                    "QPushButton{color: #8e838e}")
+                                    "QPushButton{color: #8e838e}"
+                                    "QPushButton{font-size:17px}")
         self.loginBtn.move(9999,9999)
         self.signupBtn.move(self.loginBtn_X, self.loginBtn_Y+40)
         self.userLE.move(self.userLE_X, self.userLE_Y+40)
@@ -323,12 +330,14 @@ class Login(QWidget):
         self.tab = "signup"
 
     def LoginTabClicked(self):
-        self.LoginTab.setStyleSheet("QPushButton{background-color: QLinearGradient( x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FBC2EB,stop: 1 #A6C1EE)}"
+        self.LoginTab.setStyleSheet("QPushButton{background-color:#3498db}"
                                     "QPushButton{border-radius: 115px}"
-                                    "QPushButton{color: #FFFFFF}")
+                                    "QPushButton{color: #FFFFFF}"
+                                    "QPushButton{font-size:17px}")
         self.SignUpTab.setStyleSheet("QPushButton{background-color: white}"
                                     "QPushButton{border-radius: 115px}"
-                                    "QPushButton{color: #8e838e}")
+                                    "QPushButton{color: #8e838e}"
+                                    "QPushButton{font-size:17px}")
         self.signupBtn.move(9999,9999)
         self.loginBtn.move(self.loginBtn_X, self.loginBtn_Y)
         self.userLE.move(self.userLE_X, self.userLE_Y)
