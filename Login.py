@@ -142,7 +142,7 @@ class Login(QWidget):
         self.readBtn.move(self.left-100, 320+self.top)
         self.readBtn.resize(200,36)
         self.readBtn.clicked.connect(self.ReadClicked)
-        self.readBtn.setVisible(True)
+        self.readBtn.setVisible(False)
 
         self.signupBtn = QPushButton("Sign up",self)
         self.signupBtn.move(9999,9999)
